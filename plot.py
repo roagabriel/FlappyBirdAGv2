@@ -37,3 +37,7 @@ def plotNeuralNetwork(architecture):
     plt.tight_layout()
     plt.axis("off")
     plt.show()
+
+
+if __name__=="__main__":
+    plotNeuralNetwork([3,4,1])

@@ -181,7 +181,7 @@ def evaluate():
         return False
 
     plt.ion()
-    fig = plt.figure()
+    fig = plt.figure(figsize=(8, 6), dpi=120)
     ax = fig.add_subplot(111)
     multi = 1
     running = True
@@ -310,6 +310,7 @@ def evaluate():
             LIST_MAX_PIPE_COUNT.append(MAX_PIPE_COUNT)
             LIST_PIPE_COUNT.append(PIPE_COUNT)
 
+            ax.plot(range(0,GENERATION),LIST_MAX_PIPE_COUNT, color='blue', linewidth=2, label='Best all')
             ax.plot(range(0,GENERATION),LIST_PIPE_COUNT, color='black', linewidth=2, label='Progression')
             ax.grid(True)
             fig.canvas.draw()
@@ -326,10 +327,16 @@ def evaluate():
             NEURAL_NETWORK.evolution(FITNESS.copy())
             restart()
             try:
-                ax.lines[0].remove()
-                ax.collections[0].remove()
+                for line in ax.lines:
+                    line.remove()
             except:
-                continue
+                next
+            try:
+                for collection in ax.collections:
+                    collection.remove()
+            except:
+                next
+            
             continue
         
         pygame.display.update()

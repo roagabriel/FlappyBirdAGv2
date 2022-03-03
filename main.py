@@ -19,7 +19,7 @@ CROSSOVER_RATE = 0.8
 MUTATION_RATE = 0.08
 C1_PARAM = 1.5              # cognitive factor
 C2_PARAM = 4.1 - C1_PARAM   # social factor
-W_PARAM = 1/(2*(C1_PARAM+C2_PARAM))-1 # inertial weight
+W_PARAM = 1/2*(C1_PARAM+C2_PARAM)-1 # inertial weight
 ARCHITECTURE = [3,4,1]
 if SEARCH_MODE == 0:
     NEURAL_NETWORK = GeneticSearch(POPULATION_SIZE, CROSSOVER_RATE, MUTATION_RATE, ARCHITECTURE)

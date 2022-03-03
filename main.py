@@ -2,7 +2,7 @@ from platform import architecture
 import pygame
 from random import randint
 from geneticAlgorithm import GeneticSearch
-from pso import PSO
+from swarmIntelligence import SwarmIntelligence
 from plot import plotNeuralNetwork
 import matplotlib.pyplot as plt
 
@@ -17,13 +17,14 @@ FITNESS = []
 GENERATION = 1
 CROSSOVER_RATE = 0.8
 MUTATION_RATE = 0.08
-C1_PARAM = 0.5 # cognitive factor
-C2_PARAM = 0.3 # social factor
+C1_PARAM = 1.5              # cognitive factor
+C2_PARAM = 4.1 - C1_PARAM   # social factor
+W_PARAM = 1/(2*(C1_PARAM+C2_PARAM))-1 # inertial weight
 ARCHITECTURE = [3,4,1]
 if SEARCH_MODE == 0:
     NEURAL_NETWORK = GeneticSearch(POPULATION_SIZE, CROSSOVER_RATE, MUTATION_RATE, ARCHITECTURE)
 if SEARCH_MODE == 1:
-    NEURAL_NETWORK = PSO(POPULATION_SIZE, C1_PARAM, C2_PARAM, MUTATION_RATE, ARCHITECTURE)
+    NEURAL_NETWORK = SwarmIntelligence(POPULATION_SIZE, C1_PARAM, C2_PARAM, W_PARAM, MUTATION_RATE, ARCHITECTURE)
 #-----------------------------------------------------------
 # Game Variables
 WIDTH = 288

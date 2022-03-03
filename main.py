@@ -2,10 +2,13 @@ from platform import architecture
 import pygame
 from random import randint
 from geneticAlgorithm import GeneticSearch
+from pso import PSO
 from plot import plotNeuralNetwork
 import matplotlib.pyplot as plt
 
-GAME_MODE = 0 # 0: Classic // 1: Vertical moviment for pipes
+GAME_MODE = 1 # 0: Classic // 1: Vertical moviment for pipes
+SEARCH_MODE = 1 # 0: AG // 1: PSO
+FPS = 1200 # Define how much fast is the game
 """ Global Variables """
 #-----------------------------------------------------------
 # NN variables 
@@ -14,14 +17,17 @@ FITNESS = []
 GENERATION = 1
 CROSSOVER_RATE = 0.8
 MUTATION_RATE = 0.08
+C1_PARAM = 0.5 # cognitive factor
+C2_PARAM = 0.3 # social factor
 ARCHITECTURE = [3,4,1]
-NEURAL_NETWORK = GeneticSearch(POPULATION_SIZE, CROSSOVER_RATE, MUTATION_RATE, ARCHITECTURE)
-
+if SEARCH_MODE == 0:
+    NEURAL_NETWORK = GeneticSearch(POPULATION_SIZE, CROSSOVER_RATE, MUTATION_RATE, ARCHITECTURE)
+if SEARCH_MODE == 1:
+    NEURAL_NETWORK = PSO(POPULATION_SIZE, C1_PARAM, C2_PARAM, MUTATION_RATE, ARCHITECTURE)
 #-----------------------------------------------------------
 # Game Variables
 WIDTH = 288
 HEIGHT = 512
-FPS = 30
 MAX_UP_SPEED = -9
 MAX_DOWN_SPEED = 15
 PIPE_SPEED = -4
@@ -272,7 +278,12 @@ def evaluate():
                 
                 
         #draw
-        textSurface1 = MYFONT.render('Generation: %i'%GENERATION, False, (0,0,255))
+        if SEARCH_MODE == 0:
+            textSurface5 = MYFONT.render('Trainer: AG', False, (0,0,255))
+            textSurface1 = MYFONT.render('Generation: %i'%GENERATION, False, (0,0,255))  
+        if SEARCH_MODE == 1:
+            textSurface5 = MYFONT.render('Trainer: PSO', False, (0,0,255))
+            textSurface1 = MYFONT.render('Iteracion: %i'%GENERATION, False, (0,0,255))
         textSurface2 = MYFONT.render('Birds Alive: %i'%BIRDS_ALIVE_NUM, False, (0,0,255))
         textSurface3 = MYFONT2.render('%i'%PIPE_COUNT, False, (255,255,255))
         textSurface4 = MYFONT.render('Max pipe count: %i'%MAX_PIPE_COUNT, False, (0,0,255))
@@ -296,10 +307,11 @@ def evaluate():
             SCREEN.blit(LOWER_PIPE, PIPES[i][1]['hitbox'])
             
         SCREEN.blit(GROUND,(GROUND_X,GROUND_Y))
-        SCREEN.blit(textSurface1,(5,HEIGHT - 90))
-        SCREEN.blit(textSurface2,(5,HEIGHT - 70))
+        SCREEN.blit(textSurface5,(5,HEIGHT - 90))
+        SCREEN.blit(textSurface1,(5,HEIGHT - 70))
+        SCREEN.blit(textSurface2,(5,HEIGHT - 50))
         SCREEN.blit(textSurface3,(144 - textSurface3.get_width() // 2,20))
-        SCREEN.blit(textSurface4,(5,HEIGHT - 50))
+        SCREEN.blit(textSurface4,(5,HEIGHT - 30))
 
         BIRDS_ALIVE_NUM = POPULATION_SIZE
         colision_bird()

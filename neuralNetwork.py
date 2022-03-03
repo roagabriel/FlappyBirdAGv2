@@ -21,7 +21,12 @@ class NeuralNetwork:
         signal = weights[0]*(-1)
         for i in range(1,len(weights)):
             signal += weights[i]*inputs[i-1]
-        return self.sigmoidLogistic(signal)
+        try:
+            process = self.sigmoidLogistic(signal)
+        except:
+            process = 1
+        return process
+
 
     def feedForward(self,inputs):
         for layer in self.Network:

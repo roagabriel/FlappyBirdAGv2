@@ -3,28 +3,74 @@ import pygame
 from random import randint
 from geneticAlgorithm import GeneticSearch
 from swarmIntelligence import SwarmIntelligence
+from AntColonyOptmization import AntColonyOptmization
 from plot import plotNeuralNetwork
 import matplotlib.pyplot as plt
 
-GAME_MODE = 1 # 0: Classic // 1: Vertical moviment for pipes
-SEARCH_MODE = 1 # 0: AG // 1: PSO
+GAME_MODE = 0 # 0: Classic // 1: Vertical moviment for pipes
+SEARCH_MODE = 0 # 0: AG // 1: PSO // 2: ACO
 FPS = 1200 # Define how much fast is the game
 """ Global Variables """
 #-----------------------------------------------------------
 # NN variables 
+ARCHITECTURE = [3,3,4,1]
 POPULATION_SIZE = 100
 FITNESS = []
 GENERATION = 1
+# GA variables
 CROSSOVER_RATE = 0.8
-MUTATION_RATE = 0.08
+MUTATION_RATE_GA = 0.08
+
+# PSO variables
 C1_PARAM = 1.5              # cognitive factor
 C2_PARAM = 4.1 - C1_PARAM   # social factor
 W_PARAM = 1/2*(C1_PARAM+C2_PARAM)-1 # inertial weight
-ARCHITECTURE = [3,4,1]
+MUTATION_RATE_PSO = 0.08
+
+# ACO variables
+ELITIMS = 2             # how many of the best individuals to keep from one generation to the next
+TAU_INICIAL = 10**(-12)         # initial pheromone value
+ALPHA = 1              # pheromone sensitivity
+RHO_GLOBAL = 0.1        # global pheromone decay rate
+RHO_LOCAL = 0.5         # local pheromone decay rate
+UPDATE_GAIN = 1       # pheromonone update constant
+EXPLORATION_RATE = 1    # exploration constant
+MUTATION_RATE_ACO = 0.08
+MAXPARVALUE = 60000 
+MINPARVALUE = -60000
+MESH = 10
 if SEARCH_MODE == 0:
-    NEURAL_NETWORK = GeneticSearch(POPULATION_SIZE, CROSSOVER_RATE, MUTATION_RATE, ARCHITECTURE)
+    NEURAL_NETWORK = GeneticSearch(
+        POPULATION_SIZE,
+        CROSSOVER_RATE,
+        MUTATION_RATE_GA,
+        ARCHITECTURE
+    )
 if SEARCH_MODE == 1:
-    NEURAL_NETWORK = SwarmIntelligence(POPULATION_SIZE, C1_PARAM, C2_PARAM, W_PARAM, MUTATION_RATE, ARCHITECTURE)
+    NEURAL_NETWORK = SwarmIntelligence(
+        POPULATION_SIZE,
+        C1_PARAM,
+        C2_PARAM,
+        W_PARAM,
+        MUTATION_RATE_PSO,
+        ARCHITECTURE
+    )
+if SEARCH_MODE == 2:
+    NEURAL_NETWORK = AntColonyOptmization(
+        POPULATION_SIZE,
+        ELITIMS,
+        TAU_INICIAL,
+        ALPHA,
+        RHO_GLOBAL,
+        RHO_LOCAL,
+        UPDATE_GAIN,
+        EXPLORATION_RATE,
+        MAXPARVALUE,
+        MINPARVALUE,
+        MESH,
+        MUTATION_RATE_ACO,
+        ARCHITECTURE
+    )    
 #-----------------------------------------------------------
 # Game Variables
 WIDTH = 288
@@ -181,11 +227,19 @@ def evaluate():
                 if pipe[0]['hitbox'].colliderect(BIRDS[i]['hitbox']) or pipe[1]['hitbox'].colliderect(BIRDS[i]['hitbox']):
                     BIRDS[i]['alive'] = False                                                                                            
 
-
+    
     def colision_pixel(bird,pipe):
         if (pipe['x'] < bird['x']-40 < (pipe['x'] + pipe['width'])) and (pipe['y'] < bird['y']-40 < (pipe['y'] + pipe['height'])):
             return True
         return False
+    [3,4,1]
+    
+    def printNN(NeuralNetwork):
+         for i in range(1,len(ARCHITECTURE)): 
+            for j in range(ARCHITECTURE[i]):    
+                for k in range(ARCHITECTURE[i-1]): 
+                    print(f'w({i-1},{j},{k}) = {NeuralNetwork.getNetwork()[i-1][j][k]}')
+                    
 
     plt.ion()
     fig = plt.figure(figsize=(8, 6), dpi=120)
@@ -285,6 +339,9 @@ def evaluate():
         if SEARCH_MODE == 1:
             textSurface5 = MYFONT.render('Trainer: PSO', False, (0,0,255))
             textSurface1 = MYFONT.render('Iteracion: %i'%GENERATION, False, (0,0,255))
+        if SEARCH_MODE == 2:
+            textSurface5 = MYFONT.render('Trainer: ACO', False, (0,0,255))
+            textSurface1 = MYFONT.render('Generation: %i'%GENERATION, False, (0,0,255))
         textSurface2 = MYFONT.render('Birds Alive: %i'%BIRDS_ALIVE_NUM, False, (0,0,255))
         textSurface3 = MYFONT2.render('%i'%PIPE_COUNT, False, (255,255,255))
         textSurface4 = MYFONT.render('Max pipe count: %i'%MAX_PIPE_COUNT, False, (0,0,255))
@@ -354,6 +411,11 @@ def evaluate():
         
         pygame.display.update()
         clock.tick(FPS)
+    
+    print("Best NN:")
+    printNN(NEURAL_NETWORK.BestGlobal)
+    print(f"Fitness for best global: {NEURAL_NETWORK.BestGlobalFitness}")
+    print(f"Generations: {GENERATION}")
 
 
 if __name__ == "__main__":

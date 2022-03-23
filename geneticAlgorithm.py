@@ -10,6 +10,9 @@ class GeneticSearch:
         self.architecture = architecture
         self.population = []
 
+        self.BestGlobalFitness = 1
+        self.BestGlobal = NeuralNetwork(self.architecture)
+
         for i in range(populationSize):
             self.population.append(NeuralNetwork(architecture))
 
@@ -62,6 +65,16 @@ class GeneticSearch:
             if fitness[index_max1] < fitness[i]:
                 index_max1 = i
         newPopulation.append(self.population[index_max1])
+
+
+        if self.BestGlobalFitness < fitness[index_max1]:
+            self.BestGlobalFitness = fitness[index_max1]
+            for i in range(len(self.BestGlobal.getNetwork())):
+                for j in range(len(self.BestGlobal.getNetwork()[i])):
+                    for k in range(len(self.BestGlobal.getNetwork()[i][j])):
+                        self.BestGlobal.getNetwork()[i][j][k] = self.population[index_max1].getNetwork()[i][j][k]
+
+
         for i in range(len(fitness)):
             if fitness[index_max2] < fitness[i] < fitness[index_max1]:
                 index_max2 = i
@@ -75,5 +88,6 @@ class GeneticSearch:
         return newPopulation
 
     def evolution(self,fitness):
+
         parents_list = self.selection(fitness.copy())
         self.population = self.reproduction(parents_list,fitness.copy())

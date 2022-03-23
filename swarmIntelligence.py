@@ -10,7 +10,7 @@ class SwarmIntelligence:
         self.w = w
         self.mutationRate = mutationRate
         self.architecture = architecture
-        self.BestGlobalFitness = -1
+        self.BestGlobalFitness = 1
         self.BestGlobal = NeuralNetwork(self.architecture)
         self.BestCurrent = NeuralNetwork(self.architecture)
         self.swarm = []
@@ -63,7 +63,7 @@ class SwarmIntelligence:
 
  
 
-        for i in range(1,len(self.swarm)):
+        for i in range(len(self.swarm)):
             updatedParticle = self.update(self.swarm[i])
             newswarm.append(updatedParticle)
 

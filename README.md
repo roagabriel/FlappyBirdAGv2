@@ -1,10 +1,11 @@
-# FlappyBirdAGv2
-Projeto que utiliza redes neurais em conjunto com a busca genética para jogar flappy bird
+# FlappyBird
+Biogeography-Based Optimizer (BBO) for training Multi-Layer Perceptron (MLP) for play flappy bird
 
-#### Modos de jogo
-- Modo 0: Jogo classico.
-- Modo 1: Tubos se movem verticalmente.
+#### Game Mode
+- Mode 0: Classic Game.
+- Mode 1: Tubes move vertically.
 
-#### Modo de treinamento
-- Modo 0: AG
-- Modo 1: PSO
+#### Biogeography-Based Optimizer
+- Selection 0: AG
+- Selection 1: PSO
+- Selection 2: ACO

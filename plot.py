@@ -4,7 +4,7 @@ import networkx as nx
 
 
 def plotNeuralNetwork(architecture):
-    architecture.insert(0,architecture[0])
+    #architecture.insert(0,architecture[0])
 
     G = nx.Graph()
     # explicitly set positions
@@ -40,4 +40,4 @@ def plotNeuralNetwork(architecture):
 
 
 if __name__=="__main__":
-    plotNeuralNetwork([3,4,1])
+    plotNeuralNetwork([3,3,4,1])
